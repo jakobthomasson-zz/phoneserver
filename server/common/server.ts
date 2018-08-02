@@ -27,7 +27,7 @@ export default class ExpressServer {
 
   listen(port: number = parseInt(process.env.PORT)): Application {
     const welcome = port => () => l.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname() } on port: ${port}}`);
-    http.createServer(app).listen(port, '193.150.211.190');
+    http.createServer(app).listen(port, '0.0.0.0');
     return app;
   }
 }
