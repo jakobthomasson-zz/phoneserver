@@ -14,18 +14,29 @@ export default class ExpressServer {
   constructor() {
     const root = path.normalize(__dirname + '/../..');
     app.set('appPath', root + 'client');
+    app.set('views', root + 'views');
+    app.set('view engine', 'pug');
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(cookieParser(process.env.SESSION_SECRET));
     app.use(express.static(`${root}/public`));
+    
+    app.use((req: any, res: any, next: any) => {
+      let err: any = new Error('Not Found');
+      err.status = 404;
+      next(err);
+    })
+
   }
+
   router(routes: (app: Application) => void): ExpressServer {
     swaggerify(app, routes)
     return this;
   }
 
   listen(port: number = parseInt(process.env.PORT)): Application {
-    const welcome = port => () => l.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname() } on port: ${port}}`);
+    const welcome = port => () => l.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname()} on port: ${port}}`);
     http.createServer(app).listen(port, welcome(port));
     return app;
   }
